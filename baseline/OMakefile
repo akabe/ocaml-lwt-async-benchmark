@@ -1,0 +1,10 @@
+.PHONY: all run clean
+
+FILES[] = \
+	loop
+
+.DEFAULT: $(foreach f => $(OCamlProgram $(f), $(f)), $(FILES))
+
+run:: $(OCamlBenchmark $(FILES))
+
+OCamlClean($(FILES))

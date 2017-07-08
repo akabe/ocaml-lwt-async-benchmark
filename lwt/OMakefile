@@ -1,0 +1,16 @@
+.PHONY: all run clean
+
+OCAMLPACKS[] +=
+	core
+	lwt
+	lwt.unix
+
+FILES[] = \
+	loop \
+	communication
+
+.DEFAULT: $(foreach f => $(OCamlProgram $(f), $(f)), $(FILES))
+
+run:: $(OCamlBenchmark $(FILES))
+
+OCamlClean($(FILES))

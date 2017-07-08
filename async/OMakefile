@@ -1,0 +1,15 @@
+.PHONY: all run clean
+
+OCAMLPACKS[] +=
+	core
+	async
+
+FILES[] = \
+	loop \
+	communication
+
+.DEFAULT: $(foreach f => $(OCamlProgram $(f), $(f)), $(FILES))
+
+run:: $(OCamlBenchmark $(FILES))
+
+OCamlClean($(FILES))

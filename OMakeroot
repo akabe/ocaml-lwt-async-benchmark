@@ -1,0 +1,45 @@
+open build/OCaml
+
+DefineCommandVars()
+
+public.OCamlBenchmark(targets) =
+	protected.logs[] =
+	foreach(f => ..., $(targets))
+		byte_run = $(f).run
+		opt_run = $(f).opt
+		byte_log = $(byte_run).log
+		opt_log = $(opt_run).log
+		$(byte_log): $(byte_run)
+			./$(byte_run) | tee $(byte_run).log
+		$(opt_log): $(opt_run)
+			./$(opt_run) | tee $(opt_run).log
+		logs[] += $(byte_log)
+		logs[] += $(opt_log)
+		export
+	return $(logs)
+
+public.OCamlClean(targets) =
+	obj_files = *.omc *.cm* *.annot *.o *.a *.so *.run *.opt
+	log_files = *.log
+	clean::
+		rm -f $(obj_files) $(log_files) $(targets)
+
+USE_OCAMLFIND = true
+
+if $(not $(OCAMLFIND_EXISTS))
+	eprintln(This project requires ocamlfind, but is was not found.)
+	eprintln(You need to install ocamlfind and run "omake --configure".)
+	exit 1
+
+NATIVE_ENABLED = true
+BYTE_ENABLED = true
+
+OCAMLPACKS[] +=
+	core
+
+OCAMLFLAGS += \
+	-g -thread -no-alias-deps -annot -bin-annot \
+	-strict-formats -safe-string -strict-sequence \
+	-w A-4-33-34-39-41-42-43-44-45-48-49-50-58
+
+.SUBDIRS: .

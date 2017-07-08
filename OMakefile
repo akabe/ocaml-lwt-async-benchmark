@@ -1,0 +1,6 @@
+.PHONY: all run clean
+
+.SUBDIRS: baseline async lwt
+
+clean::
+	rm -f *.omc
